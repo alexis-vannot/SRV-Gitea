@@ -8,7 +8,7 @@ services:
   gitlab:
     # ---- Build instructions ----
     container_name: gitlab
-    image: gitlab/gitlab-ee:latest
+    image: gitlab/gitlab-ce:latest
 
     # ---- Container information ----
     restart: unless-stopped

@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+
+  # ===========================
+  # |   Uptime Gitlab         |
+  # ===========================
+  gitlab:
+    # ---- Build instructions ----
+    container_name: gitlab
+    image: gitlab/gitlab-ee:latest
+
+    # ---- Container information ----
+    restart: unless-stopped
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.gitlab-router.rule=Host(`gitlab.alexis-vannot.com`)
+      - traefik.http.routers.gitlab-router.entrypoints=websecure
+      - traefik.http.routers.gitlab-router.tls=true
+      - traefik.http.routers.gitlab-router.tls.certresolver=letsencrypt
+      - traefik.http.services.gitlab-service.loadbalancer.server.port=443
+    volumes:
+      # Container configuration
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      # Gitlab data
+      - ./gitlab_config:/etc/gitlab
+      - ./gitlab_logs:/var/log/gitlab
+      - ./gitlab_data:/var/opt/gitlab
+    networks:
+      - webgateway-traefik
+
+networks:
+  webgateway-traefik:
+    external: true

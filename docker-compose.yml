@@ -32,6 +32,17 @@ services:
  
         # GitLab SSH
         gitlab_rails['gitlab_shell_ssh_port'] = 22
+
+        # GitLab connection
+        gitlab_rails['omniauth_providers'] = [
+          {
+            name: "github",
+            label: "GitHub",
+            app_id: "0fafcddcd07f252a4c4c",
+            app_secret: "c8840820c014ee8e1147acef83f69909d2fe4a6e",
+            args: { scope: "user:email" }
+          }
+        ]
     labels:
       - traefik.enable=true
       - traefik.http.routers.gitlab-router.rule=Host(`gitlab.alexis-vannot.com`)

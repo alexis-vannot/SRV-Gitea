@@ -16,13 +16,33 @@ services:
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         external_url 'https://gitlab.alexis-vannot.com'
+        nginx['listen_https'] = false
+        nginx['listen_port'] = 80
+        nginx['proxy_set_headers'] = {
+          "X-Forwarded-Proto" => "https",
+          "X-Forwarded-SSL" => "on"
+        }
+
+        # # Gitlab Registry
+        # registry['enable'] = false
+        # gitlab_rails['registry_enabled'] = true
+        # gitlab_rails['registry_host'] = "registry.gitlab.example.com"
+        # gitlab_rails['registry_api_url'] = "https://registry.gitlab.example.com"
+        # gitlab_rails['registry_issuer'] = "gitlab-issuer"
+ 
+        # GitLab SSH
+        gitlab_rails['gitlab_shell_ssh_port'] = 22
     labels:
       - traefik.enable=true
       - traefik.http.routers.gitlab-router.rule=Host(`gitlab.alexis-vannot.com`)
       - traefik.http.routers.gitlab-router.entrypoints=websecure
       - traefik.http.routers.gitlab-router.tls=true
       - traefik.http.routers.gitlab-router.tls.certresolver=letsencrypt
-      - traefik.http.services.gitlab-service.loadbalancer.server.port=443
+      - traefik.http.services.gitlab-service.loadbalancer.server.port=80
+      - traefik.tcp.routers.gitlab-ssh.rule=HostSNI(`*`)
+      - traefik.tcp.routers.gitlab-ssh.entrypoints=ssh
+      - traefik.tcp.routers.gitlab-ssh.service=gitlab-ssh-svc
+      - traefik.tcp.services.gitlab-ssh-svc.loadbalancer.server.port=22
     volumes:
       # Container configuration
       - /etc/timezone:/etc/timezone:ro

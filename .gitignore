@@ -1,0 +1,11 @@
+# Visual Studio cache/options directory
+.vs/
+.vscode
+
+# OSX Files
+.DS_Store
+
+# Bind volumes
+gitlab_config/
+gitlab_logs/
+gitlab_data/

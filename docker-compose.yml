@@ -45,15 +45,17 @@ services:
         ]
     labels:
       - traefik.enable=true
-      - traefik.http.routers.gitlab-router.rule=Host(`gitlab.alexis-vannot.com`)
-      - traefik.http.routers.gitlab-router.entrypoints=websecure
-      - traefik.http.routers.gitlab-router.tls=true
-      - traefik.http.routers.gitlab-router.tls.certresolver=letsencrypt
-      - traefik.http.services.gitlab-service.loadbalancer.server.port=80
-      - traefik.tcp.routers.gitlab-ssh.rule=HostSNI(`*`)
-      - traefik.tcp.routers.gitlab-ssh.entrypoints=ssh
-      - traefik.tcp.routers.gitlab-ssh.service=gitlab-ssh-svc
-      - traefik.tcp.services.gitlab-ssh-svc.loadbalancer.server.port=22
+      - traefik.http.routers.gitlab-http-router.rule=Host(`gitlab.alexis-vannot.com`)
+      - traefik.http.routers.gitlab-http-router.entrypoints=websecure
+      - traefik.http.routers.gitlab-http-router.tls=true
+      - traefik.http.routers.gitlab-http-router.tls.certresolver=letsencrypt
+      - traefik.http.services.gitlab-http-service.loadbalancer.server.port=80
+
+      - traefik.tcp.routers.gitlab-tcp-router.rule=HostSNI(`gitlab.alexis-vannot.com`)
+      - traefik.tcp.routers.gitlab-tcp-router.entrypoints=22
+      - traefik.tcp.routers.gitlab-tcp-router.tls=true
+      - traefik.tcp.routers.gitlab-tcp-router.tls.certresolver=letsencrypt
+      - traefik.tcp.services.gitlab-tcp-service.loadbalancer.server.port=22
     volumes:
       # Container configuration
       - /etc/timezone:/etc/timezone:ro

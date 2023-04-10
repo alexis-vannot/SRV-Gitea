@@ -12,8 +12,7 @@ services:
 
     # ---- Container information ----
     restart: unless-stopped
-    ports:
-      - 22:22
+    hostname: 'gitlab.alexis-vannot.com'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         external_url 'https://gitlab.alexis-vannot.com'

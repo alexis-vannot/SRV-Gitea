@@ -55,7 +55,6 @@ services:
       - traefik.tcp.routers.gitlab-tcp-router.rule=HostSNI(`gitlab.alexis-vannot.com`)
       - traefik.tcp.routers.gitlab-tcp-router.entrypoints=ssh
       - traefik.tcp.routers.gitlab-tcp-router.tls=true
-      - traefik.tcp.routers.gitlab-tcp-router.passthrough=true
       - traefik.tcp.routers.gitlab-tcp-router.tls.certresolver=letsencrypt
       - traefik.tcp.routers.gitlab-tcp-router.service=gitlab-tcp-service
       - traefik.tcp.services.gitlab-tcp-service.loadbalancer.server.port=22

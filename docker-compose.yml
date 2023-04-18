@@ -45,14 +45,14 @@ services:
         ]
     labels:
       - traefik.enable=true
-      - traefik.http.routers.gitlab-http-router.rule=Host(`gitlab.alexis-vannot.com`)
+      - traefik.http.routers.gitlab-http-router.rule=Host(`gitlab.alexis-vannot.dev`)
       - traefik.http.routers.gitlab-http-router.entrypoints=websecure
       - traefik.http.routers.gitlab-http-router.tls=true
       - traefik.http.routers.gitlab-http-router.tls.certresolver=letsencrypt
       - traefik.http.routers.gitlab-http-router.service=gitlab-http-service
       - traefik.http.services.gitlab-http-service.loadbalancer.server.port=80
 
-      - traefik.tcp.routers.gitlab-tcp-router.rule=HostSNI(`gitlab.alexis-vannot.com`)
+      - traefik.tcp.routers.gitlab-tcp-router.rule=HostSNI(`gitlab.alexis-vannot.dev`)
       - traefik.tcp.routers.gitlab-tcp-router.entrypoints=ssh
       - traefik.tcp.routers.gitlab-tcp-router.tls=true
       - traefik.tcp.routers.gitlab-tcp-router.tls.certresolver=letsencrypt

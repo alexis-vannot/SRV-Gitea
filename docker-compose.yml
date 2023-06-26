@@ -33,11 +33,11 @@ services:
       - traefik.http.services.gitea-http-service.loadbalancer.server.port=3000
 
       - traefik.tcp.routers.gitea-tcp-router.rule=HostSNI(`gitlab.alexis-vannot.dev`)
-      - traefik.tcp.routers.gitea-tcp-router.entrypoints=gitea-ssh
+      - traefik.tcp.routers.gitea-tcp-router.entrypoints=ssh
       - traefik.tcp.routers.gitea-tcp-router.tls=true
       - traefik.tcp.routers.gitea-tcp-router.tls.certresolver=letsencrypt
       - traefik.tcp.routers.gitea-tcp-router.service=gitea-tcp-service
-      - traefik.tcp.services.gitea-tcp-service.loadbalancer.server.port=2222
+      - traefik.tcp.services.gitea-tcp-service.loadbalancer.server.port=22
     volumes:
       # Container configuration
       - /etc/timezone:/etc/timezone:ro

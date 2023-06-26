@@ -7,6 +7,5 @@
 
 # Bind volumes
 postgresql_data/
-gitea_conf/
 gitea_data/
 .secrets/

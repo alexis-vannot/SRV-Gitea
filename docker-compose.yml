@@ -14,13 +14,6 @@ services:
     restart: unless-stopped
     depends_on:
       - postgresql-gitea
-    environment:
-      - GITEA__database__DB_TYPE=postgres
-      - GITEA__database__HOST=postgresql-gitea
-
-      - GITEA__database__NAME=gitea
-      - GITEA__database__USER=gitea
-      - GITEA__database__PASSWD=oH5c4U!JyX3wkVh6@EWu9q4YuMy8fc
     labels:
       - traefik.enable=true
       - traefik.docker.network=webgateway-traefik
@@ -41,9 +34,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
       # Gitea data
-      - ./gitea_data:/var/lib/gitea
-      # Gitea conf
-      - ./gitea_conf:/etc/gitea
+      - ./gitea_data:/data
     networks:
       - webgateway-gitea
       - webgateway-traefik

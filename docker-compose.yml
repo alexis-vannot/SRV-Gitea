@@ -32,7 +32,7 @@ services:
       - traefik.http.routers.gitea-http-router.service=gitea-http-service
       - traefik.http.services.gitea-http-service.loadbalancer.server.port=3000
 
-      - traefik.tcp.routers.gitea-tcp-router.rule=HostSNI(`gitlab.alexis-vannot.dev`)
+      - traefik.tcp.routers.gitea-tcp-router.rule=HostSNI(`*`)
       - traefik.tcp.routers.gitea-tcp-router.entrypoints=ssh
       - traefik.tcp.routers.gitea-tcp-router.tls=true
       - traefik.tcp.routers.gitea-tcp-router.tls.certresolver=letsencrypt

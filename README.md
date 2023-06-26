@@ -1,4 +1,4 @@
-# Gitlab
+# SRV-Gitea
 
 ## Lancement du conteneur
 
@@ -15,12 +15,10 @@ docker-compose down --remove-orphans
 ## Rentrer dans le conteneur
 
 ```shell
-docker exec -it gitlab sh
+docker exec -it gitea bash
+docker exec -it postgresql-gitea bash
 ```
 
 ## Informations
 
-Toutes les données sont gérés dans des points de montage.
-- .gitlab_config/
-- .gitlab_logs/
-- .gitlab_data/
+TODO

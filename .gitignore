@@ -6,6 +6,7 @@
 .DS_Store
 
 # Bind volumes
-gitlab_config/
-gitlab_logs/
-gitlab_data/
+postgresql_data/
+gitea_conf/
+gitea_data/
+.secrets/

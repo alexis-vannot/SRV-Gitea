@@ -2,72 +2,92 @@ version: "3"
 
 services:
 
-  # ===========================
-  # |   Uptime Gitlab         |
-  # ===========================
-  gitlab:
+  # ===================
+  # |   Gitea         |
+  # ===================
+  gitea:
     # ---- Build instructions ----
-    container_name: gitlab
-    image: gitlab/gitlab-ce:latest
+    container_name: gitea
+    image: gitea/gitea:nightly-rootless
 
     # ---- Container information ----
     restart: unless-stopped
+    depends_on:
+      - postgresql-odoo
     environment:
-      GITLAB_OMNIBUS_CONFIG: |
-        external_url 'https://gitlab.alexis-vannot.dev'
-        nginx['listen_https'] = false
-        nginx['listen_port'] = 80
-        nginx['proxy_set_headers'] = {
-          "X-Forwarded-Proto" => "https",
-          "X-Forwarded-SSL" => "on"
-        }
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=postgresql-gitea
 
-        # # Gitlab Registry
-        # registry['enable'] = false
-        # gitlab_rails['registry_enabled'] = true
-        # gitlab_rails['registry_host'] = "registry.gitlab.example.com"
-        # gitlab_rails['registry_api_url'] = "https://registry.gitlab.example.com"
-        # gitlab_rails['registry_issuer'] = "gitlab-issuer"
- 
-        # GitLab SSH
-        gitlab_rails['gitlab_shell_ssh_port'] = 22
-
-        # GitLab connection
-        gitlab_rails['omniauth_providers'] = [
-          {
-            name: "github",
-            label: "GitHub",
-            app_id: "0fafcddcd07f252a4c4c",
-            app_secret: "c8840820c014ee8e1147acef83f69909d2fe4a6e",
-            args: { scope: "user:email" }
-          }
-        ]
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=gitea
+      - GITEA__database__PASSWD=gitea
     labels:
       - traefik.enable=true
-      - traefik.http.routers.gitlab-http-router.rule=Host(`gitlab.alexis-vannot.dev`)
-      - traefik.http.routers.gitlab-http-router.entrypoints=websecure
-      - traefik.http.routers.gitlab-http-router.tls=true
-      - traefik.http.routers.gitlab-http-router.tls.certresolver=letsencrypt
-      - traefik.http.routers.gitlab-http-router.service=gitlab-http-service
-      - traefik.http.services.gitlab-http-service.loadbalancer.server.port=80
+      - traefik.docker.network=webgateway-traefik
 
-      - traefik.tcp.routers.gitlab-tcp-router.rule=HostSNI(`gitlab.alexis-vannot.dev`)
-      - traefik.tcp.routers.gitlab-tcp-router.entrypoints=ssh
-      - traefik.tcp.routers.gitlab-tcp-router.tls=true
-      - traefik.tcp.routers.gitlab-tcp-router.tls.certresolver=letsencrypt
-      - traefik.tcp.routers.gitlab-tcp-router.service=gitlab-tcp-service
-      - traefik.tcp.services.gitlab-tcp-service.loadbalancer.server.port=22
+      - traefik.http.routers.gitea-http-router.rule=Host(`gitea.alexis-vannot.dev`)
+      - traefik.http.routers.gitea-http-router.entrypoints=websecure
+      - traefik.http.routers.gitea-http-router.tls=true
+      - traefik.http.routers.gitea-http-router.tls.certresolver=letsencrypt
+      - traefik.http.routers.gitea-http-router.service=gitea-http-service
+      - traefik.http.services.gitea-http-service.loadbalancer.server.port=3000
+
+      - traefik.tcp.routers.gitea-tcp-router.rule=HostSNI(`gitlab.alexis-vannot.dev`)
+      - traefik.tcp.routers.gitea-tcp-router.entrypoints=ssh
+      - traefik.tcp.routers.gitea-tcp-router.tls=true
+      - traefik.tcp.routers.gitea-tcp-router.tls.certresolver=letsencrypt
+      - traefik.tcp.routers.gitea-tcp-router.service=gitea-tcp-service
+      - traefik.tcp.services.gitea-tcp-service.loadbalancer.server.port=22
     volumes:
       # Container configuration
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-      # Gitlab data
-      - ./gitlab_config:/etc/gitlab
-      - ./gitlab_logs:/var/log/gitlab
-      - ./gitlab_data:/var/opt/gitlab
+      # Gitea data
+      - ./gitea_data:/var/lib/gitea
+      # Gitea conf
+      - ./gitea_conf:/etc/gitea
     networks:
+      - webgateway-gitea
       - webgateway-traefik
 
+  # ============================
+  # |    PostgreSQL            |
+  # ============================
+  postgresql-gitea:
+    # ---- Build instructions ----
+    container_name: postgresql-gitea
+    image: postgres:14
+    shm_size: 256m
+
+    # ---- Container information ----
+    tty: true
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgresql_root_password
+    volumes:
+      # Container configuration
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      # PostgreSQL data
+      - ./postgresql_data:/var/lib/postgresql/data
+    networks:
+      - webgateway-gitea
+    secrets:
+      - postgresql_root_password
+
+# ========================
+# |  Networks            |
+# ========================
 networks:
+  webgateway-gitea:
+    name: webgateway-gitea
+
   webgateway-traefik:
     external: true
+
+# ========================
+# |  Secrets             |
+# ========================
+secrets:
+  postgresql_root_password:
+    file: ./.secrets/postgresql_root_password.txt

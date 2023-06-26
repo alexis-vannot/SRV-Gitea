@@ -8,7 +8,7 @@ services:
   gitea:
     # ---- Build instructions ----
     container_name: gitea
-    image: gitea/gitea:main-nightly-rootless
+    image: gitea/gitea:nightly
 
     # ---- Container information ----
     restart: unless-stopped

@@ -13,7 +13,7 @@ services:
     # ---- Container information ----
     restart: unless-stopped
     depends_on:
-      - postgresql-odoo
+      - postgresql-gitea
     environment:
       - GITEA__database__DB_TYPE=postgres
       - GITEA__database__HOST=postgresql-gitea

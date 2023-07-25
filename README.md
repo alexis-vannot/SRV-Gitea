@@ -21,4 +21,14 @@ docker exec -it postgresql-gitea bash
 
 ## Informations
 
-TODO
+### Gitea
+
+- Aucun fichier de configuration est nécessaire, Gitea permet de tout configurer depuis l'interface web.
+
+- Les données persistantes sont dans le dossier `./gitea_data` sur l'hôte.
+
+### Postgresql
+
+- La seule variable d'environement utilisée est stockée dans un "secrets" dans le dossier `./.secrets/` sur l'hôte.
+
+- Les données persistantes sont dans le dossier `./postgresql_data` sur l'hôte.
